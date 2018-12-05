@@ -61,6 +61,7 @@
           })
         }));
       }
+      var apiKey='37d6eaa4af5011e8a57c020000f1e0a1';
 
       styles.push('ESDMv1 OSM Uncontoured');
       styles.push('ESDMv1 OSM Contoured')
@@ -73,7 +74,7 @@
                                 visible: false,
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
-                                        url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/u/{z}/{x}/{y}.png',
+                                        url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/u/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                                         maxZoom: 18
                                 })
                         }));
@@ -81,7 +82,7 @@
                                 visible: false,
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
-                                        url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/c/{z}/{x}/{y}.png',
+                                        url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/c/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                                         maxZoom: 18
                                 })
                         }));
@@ -90,7 +91,7 @@
                                 visible: false,
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
-                                        url: '/900913/u/{z}/{x}/{y}.png',
+                                        url: '/900913/u/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                                         maxZoom: 18
                                 })
                         }));
@@ -98,7 +99,7 @@
                                 visible: false,
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
-                                        url: '/900913/c/{z}/{x}/{y}.png',
+                                        url: '/900913/c/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                                         maxZoom: 18
                                 })
                         }));
@@ -106,7 +107,7 @@
                                 visible: true,
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
-                                        url: '/900913/tu/{z}/{x}/{y}.png',
+                                        url: '/900913/tu/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                                         maxZoom: 17
                                 })
                         }));
@@ -114,7 +115,7 @@
                                 visible: true,
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
-                                        url: '/900913/tc/{z}/{x}/{y}.png',
+                                        url: '/900913/tc/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                                         maxZoom: 17
                                 })
                         }));

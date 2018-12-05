@@ -31,6 +31,7 @@
         var duration = 1000;
         var mapExtent = [-350000, -100000, 1050000, 1300000];
         var startZoom = 9;
+        var apiKey='fc72bd6266d64eda98498f851a640821';
 
         var OS_extent = [0, 0, 800000, 1300000];
         var OS_resolutions = [2500, 1000, 500, 200, 100, 50, 25, 10, 5, 2, 1];
@@ -127,7 +128,7 @@
                         type: 'base',
                         visible: true,
                         source: new ol.source.XYZ({
-                            url: '/27700/u/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            url: '/27700/u/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                             projection: mapProjection,
                             crossOrigin: null
                         }),
@@ -140,7 +141,7 @@
                         type: 'base',
                         visible: false,
                         source: new ol.source.XYZ({
-                            url: '/27700/c/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            url: '/27700/c/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                             projection: mapProjection,
                             crossOrigin: null
                         }),
@@ -153,7 +154,7 @@
                         type: 'base',
                         visible: false,
                         source: new ol.source.XYZ({
-                            url: '/27700/tu/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            url: '/27700/tu/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                             projection: mapProjection,
                             crossOrigin: null
                         }),
@@ -166,7 +167,7 @@
                         type: 'base',
                         visible: false,
                         source: new ol.source.XYZ({
-                            url: '/27700/tc/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            url: '/27700/tc/{z}/{x}/{y}.png?APIKEY=' + apiKey,
                             projection: mapProjection,
                             crossOrigin: null
                         }),
