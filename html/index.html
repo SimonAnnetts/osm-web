@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OSM and Bing Maps</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js"></script>
+    <style type="text/css">
+      #controlbar {border:1px solid black; border-top: none; width:100%; font-family:Verdana; padding:5px;}
+      #map {border:1px solid black;}
+      #mouse {width:33%;}
+      #zoom {width:33%;}
+      #mapsel {width:34%;text-align:right;}
+
+    </style>
+  </head>
+  <body>
+     <div id="map" class="map"></div>
+     <table id="controlbar"><tr><td id="mouse"><span id="mouse-position"></span></td>
+     <td id="zoom"><span id="zoom-level"></span></td>
+     <td id="mapsel">Select a Map: <select id="layer-select">
+			 <option value="ESDMv1 OSM Uncontoured">ESDMv1 OSM Uncontoured</option>
+       <option value="ESDMv1 OSM Contoured">ESDMv1 OSM Contoured</option>
+       <option value="OSM Uncontoured">OSM Uncontoured</option>
+       <option value="OSM Contoured">OSM Contoured</option>
+       <option value="OpenTopo Uncontoured">OpenTopo Uncontoured</option>
+       <option value="OpenTopo Contoured" selected>OpenTopo Contoured</option>
+       <option value="Aerial">Aerial</option>
+       <option value="AerialWithLabels">Aerial with labels</option>
+       <option value="Road">Road (static)</option>
+       <option value="RoadOnDemand">Road (dynamic)</option>
+       <option value="collinsBart">Collins Bart</option>
+       <option value="ordnanceSurvey">Ordnance Survey</option>
+     </select></td>
+     </tr></table>
+    <script>
+      var styles = [
+        'Road',
+        'RoadOnDemand',
+        'Aerial',
+        'AerialWithLabels',
+        'collinsBart',
+        'ordnanceSurvey'
+      ];
+
+      var duration = 1000; // How long does a zoom transition take? 1 second
+
+      var layers = [];
+      var i, ii;
+      for (i = 0, ii = styles.length; i < ii; ++i) {
+        layers.push(new ol.layer.Tile({
+          visible: false,
+          preload: Infinity,
+          source: new ol.source.BingMaps({
+            key: 'Ak3o4AImNNPBACWr1rzd6TCCD8sSQreskEfNcUF_MEWv5hPT_gmgmYieEqFZcY71',
+            imagerySet: styles[i],
+            // use maxZoom 19 to see stretched tiles instead of the BingMaps
+            // "no photos at this zoom level" tiles
+            maxZoom: 19
+          })
+        }));
+      }
+
+      styles.push('ESDMv1 OSM Uncontoured');
+      styles.push('ESDMv1 OSM Contoured')
+      styles.push('OSM Uncontoured');
+      styles.push('OSM Contoured');
+      styles.push('OpenTopo Uncontoured');
+      styles.push('OpenTopo Contoured');
+      
+      layers.push(new ol.layer.Tile({
+                                visible: false,
+                                //preload: Infinity,
+                                source: new ol.source.OSM({
+                                        url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/u/{z}/{x}/{y}.png',
+                                        maxZoom: 18
+                                })
+                        }));
+      layers.push(new ol.layer.Tile({
+                                visible: false,
+                                //preload: Infinity,
+                                source: new ol.source.OSM({
+                                        url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/c/{z}/{x}/{y}.png',
+                                        maxZoom: 18
+                                })
+                        }));
+
+      layers.push(new ol.layer.Tile({
+                                visible: false,
+                                //preload: Infinity,
+                                source: new ol.source.OSM({
+                                        url: '/900913/u/{z}/{x}/{y}.png',
+                                        maxZoom: 18
+                                })
+                        }));
+      layers.push(new ol.layer.Tile({
+                                visible: false,
+                                //preload: Infinity,
+                                source: new ol.source.OSM({
+                                        url: '/900913/c/{z}/{x}/{y}.png',
+                                        maxZoom: 18
+                                })
+                        }));
+      layers.push(new ol.layer.Tile({
+                                visible: true,
+                                //preload: Infinity,
+                                source: new ol.source.OSM({
+                                        url: '/900913/tu/{z}/{x}/{y}.png',
+                                        maxZoom: 17
+                                })
+                        }));
+      layers.push(new ol.layer.Tile({
+                                visible: true,
+                                //preload: Infinity,
+                                source: new ol.source.OSM({
+                                        url: '/900913/tc/{z}/{x}/{y}.png',
+                                        maxZoom: 17
+                                })
+                        }));
+
+      var mousePositionControl = new ol.control.MousePosition({
+        coordinateFormat: ol.coordinate.createStringXY(8),
+        projection: 'EPSG:3857',
+        // comment the following two lines to have the mouse position
+        // be placed within the map.
+        className: 'custom-mouse-position',
+        target: document.getElementById('mouse-position'),
+        undefinedHTML: '&nbsp;'
+      });
+
+      var map = new ol.Map({
+        layers: layers,
+        // Improve user experience by loading tiles while dragging/zooming. Will make
+        // zooming choppy on mobile or slow devices.
+        loadTilesWhileInteracting: true,
+        target: 'map',
+        view: new ol.View({
+          center: [-390956.2904,6855216.6632],
+          zoom: 14
+        }),
+        controls: ol.control.defaults({
+          attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+            collapsible: false
+          })
+        }).extend([mousePositionControl]),
+        loadTilesWhileAnimating: true,
+        loadTilesWhileInteracting: true
+      });
+
+      map.on("moveend", function() {
+         var zoom = map.getView().getZoom();
+         var zoomInfo = 'Zoom level = ' + zoom;
+         document.getElementById('zoom-level').innerHTML = zoomInfo;
+      });
+
+      map.addControl(new ol.control.Zoom({
+        duration: duration
+      }));
+      map.addInteraction(new ol.interaction.MouseWheelZoom({
+        duration: duration
+      }));
+      map.addInteraction(new ol.interaction.DoubleClickZoom({
+          duration: duration
+      }));
+      map.addInteraction(new ol.interaction.KeyboardZoom({
+          duration: duration
+      }));
+
+      var graticule = new ol.Graticule({
+          // the style to use for the lines, optional.
+          strokeStyle: new ol.style.Stroke({
+              color: 'rgba(80,80,255,0.5)',
+              width: 1,
+
+          }),
+          intervals: [200000, 100000, 50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10],
+      });
+      //graticule.setMap(map);
+
+      var select = document.getElementById('layer-select');
+      function onChange() {
+        var style = select.value;
+        for (var i = 0, ii = layers.length; i < ii; ++i) {
+          layers[i].setVisible(styles[i] === style);
+        }
+      }
+      select.addEventListener('change', onChange);
+      onChange();
+    </script>
+  </body>
+</html>

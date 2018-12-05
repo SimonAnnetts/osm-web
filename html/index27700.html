@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OpenLayers OSM 27700 projection</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.js"></script>
+    <link rel="stylesheet" href="ol3-layerswitcher.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
+    <script src="ol3-layerswitcher.js"></script>
+    <script src="os_coordinate_functions.js"></script>
+    <style type="text/css">
+      #controlbar {border:1px solid black; border-top: none; width:100%; font-family:Verdana; padding:5px;}
+      #map {border:1px solid black;}
+      #mouse {width:33%;}
+      #zoom {width:33%;}
+      #mapsel {width:34%;text-align:right;}
+
+    </style>
+  </head>
+  <body>
+    <div id="map" class="map"></div>
+    <table id="controlbar"><tr><td id="mouse"><span id="mouse-position"></span></td>
+      <td id="zoom"><span id="zoom-level"></span></td>
+      <td id="mapsel">&nbsp;</td>
+    </tr></table>
+
+    <script>
+        var duration = 1000;
+        var mapExtent = [-350000, -100000, 1050000, 1300000];
+        var startZoom = 9;
+
+        var OS_extent = [0, 0, 800000, 1300000];
+        var OS_resolutions = [2500, 1000, 500, 200, 100, 50, 25, 10, 5, 2, 1];
+        var OSOpenSpaceKey = '5BE6CEDB63CA3B8DE0530C6CA40A0733';
+        var OSOpenSpaceAllowedDomain ='http://esdm-xen1-06.esdm.co.uk';
+        var OSOpenSpaceURL = 'https://openspace.ordnancesurvey.co.uk/osmapapi/ts';
+
+        var mapProjection = new ol.proj.Projection({
+            code: 'EPSG:27700',
+            extent: mapExtent,
+            units: 'm',
+            worldExtent: [-10, 49, 6, 63],
+            global: false,
+
+        });
+        ol.proj.addProjection(mapProjection);
+
+        var mousePositionControl = new ol.control.MousePosition({
+            coordinateFormat: function( coordinate ) {
+                    var x=ol.coordinate.format(coordinate, '{x}', 2);
+                    var y=ol.coordinate.format(coordinate, '{y}', 2);
+                    var ngr='';
+                    if ((x>0) && (y>0)) {
+                        ngr=' ' + ENToGridRef(x,y);
+                    }
+                    return x + ' ' + y + ngr;
+            },
+            //coordinateFormat: ol.coordinate.createStringXY(8),
+            projection: 'EPSG:27700',
+            // comment the following two lines to have the mouse position
+            // be placed within the map.
+            className: 'custom-mouse-position',
+            target: document.getElementById('mouse-position'),
+            undefinedHTML: '&nbsp;'
+        });
+
+        var OS_source = new ol.source.TileWMS({
+            name: "OSOpenSpace",
+            title: "OS OpenSpace",
+            url: OSOpenSpaceURL,
+            params: {
+                'VERSION': '1.1.1',
+                'LAYERS': startZoom ? OS_resolutions[startZoom-2] : '2500',
+                'KEY': OSOpenSpaceKey,
+                'URL': OSOpenSpaceAllowedDomain
+            },
+            attributions: 'Crown copyright and database right ' +
+            new Date().getFullYear() +
+            ' <span style="white-space: nowrap;">Ordnance Survey.</span>' +
+            '&nbsp;&nbsp;<span style="white-space: nowrap;">' +
+            '<a href="http://openspace.ordnancesurvey.co.uk/openspace/developeragreement.html#enduserlicense"' +
+                'target="_blank">End User Licence Agreement</a>.<br /></span>',
+            logo: 'https://openspace.ordnancesurvey.co.uk/osmapapi/img_versions/img_4.0.0/OS/poweredby_free.png',
+            extent: OS_extent,
+            projection: mapProjection,
+            // needs tilegrid otherwise uses inappropriate global grid
+            tileGrid: new ol.tilegrid.TileGrid({
+                extent: OS_extent,
+                tileSizes: [200, 200, 200, 200, 200, 200, 200, 200, 200, 250, 250],
+                resolutions: OS_resolutions,
+                origin: [0, 0]
+            })
+        });
+
+        var mapView = new ol.View({
+            projection: mapProjection,
+            extent: mapExtent,
+            center: [297093,268008],
+            zoom: startZoom,
+
+        });
+
+        var map = new ol.Map({
+
+            controls: ol.control.defaults({
+                attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+                collapsible: false
+                })
+            }).extend([mousePositionControl]),
+
+            loadTilesWhileAnimating: false,
+            loadTilesWhileInteracting: true,
+
+            target: 'map',
+            projection: mapProjection,
+
+            layers: [
+                new ol.layer.Group({
+                'title': 'Base maps',
+                layers: [
+                    
+                    new ol.layer.Tile({
+                        title: 'OSM 27700 Uncontoured',
+                        type: 'base',
+                        visible: true,
+                        source: new ol.source.XYZ({
+                            url: '/27700/u/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            projection: mapProjection,
+                            crossOrigin: null
+                        }),
+                        extent: mapExtent,
+                        maxZoom: 15
+                    }),
+                    
+                    new ol.layer.Tile({
+                        title: 'OSM 27700 Contoured',
+                        type: 'base',
+                        visible: false,
+                        source: new ol.source.XYZ({
+                            url: '/27700/c/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            projection: mapProjection,
+                            crossOrigin: null
+                        }),
+                        extent: mapExtent,
+                        maxZoom: 15
+                    }),
+
+                    new ol.layer.Tile({
+                        title: 'OpenTopo 27700 Uncontoured',
+                        type: 'base',
+                        visible: false,
+                        source: new ol.source.XYZ({
+                            url: '/27700/tu/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            projection: mapProjection,
+                            crossOrigin: null
+                        }),
+                        extent: mapExtent,
+                        maxZoom: 15
+                    }),
+
+                    new ol.layer.Tile({
+                        title: 'OpenTopo 27700 Contoured',
+                        type: 'base',
+                        visible: false,
+                        source: new ol.source.XYZ({
+                            url: '/27700/tc/{z}/{x}/{y}.png?APIKEY=fc72bd6266d64eda98498f851a640821',
+                            projection: mapProjection,
+                            crossOrigin: null
+                        }),
+                        extent: mapExtent,
+                        maxZoom: 15
+                    }),
+                    
+                    new ol.layer.Tile({
+                        title: 'Ordnance Survey OpenData',
+                        name:'OpenData',
+                        type: 'base',
+                        visible: false,
+                        source: new ol.source.TileWMS({
+                            urls: ["//geoserver9.esdm.co.uk/OrdnanceSurvey/wms", "//geoserver9a.esdm.co.uk/OrdnanceSurvey/wms", "//geoserver9b.esdm.co.uk/OrdnanceSurvey/wms"],
+                            params: {
+                                LAYERS: 'OrdnanceSurvey:OSOpenData',
+                                TILED: 'true',
+                                FORMAT: 'image/png8'
+                            },
+                            projection: mapProjection,
+                            tileGrid: new ol.tilegrid.TileGrid({
+                                origin: [0, 0],
+                                resolutions: [2500, 1000, 500, 250, 100, 50, 25, 10, 5, 2.5, 1, 0.5],
+                            }),
+                            attributions: [
+                                new ol.Attribution({
+                                    html: "Contains Ordnance Survey data &copy; Crown copyright and database right 2017"
+                                })
+                            ]
+                        }),
+                        maxZoom: 13
+                    }),
+                    
+                    new ol.layer.Tile({
+                        title: 'OS Openspace',
+                        type: 'base',
+                        maxResolution: OS_resolutions[0],
+                        minResolution: OS_resolutions[OS_resolutions.length-1],
+                        source: OS_source,
+                        name: 'OpenSpace',
+                        id: 'OpenSpace',
+                        visible: false,
+                        extent: OS_extent,
+                        maxZoom: 12
+                    }) 
+                
+                ]
+                }),
+            ],
+
+            view: mapView
+        });
+
+        map.addControl(new ol.control.LayerSwitcher({
+        tipLabel: 'Layers' // Optional label for button
+        }));
+        map.addControl(new ol.control.Zoom({
+        duration: duration
+        }));
+        map.addInteraction(new ol.interaction.MouseWheelZoom({
+        duration: duration
+        }));
+        map.addInteraction(new ol.interaction.DoubleClickZoom({
+            duration: duration
+        }));
+        map.addInteraction(new ol.interaction.KeyboardZoom({
+            duration: duration
+        }));
+
+        map.on("moveend", function() {
+            var zoom = map.getView().getZoom();
+            var zoomInfo = 'Zoom level = ' + zoom;
+            document.getElementById('zoom-level').innerHTML = zoomInfo;
+            OS_source.updateParams({ LAYERS: OS_resolutions[zoom-2] });
+        });
+
+    </script>
+  </body>
+</html>
