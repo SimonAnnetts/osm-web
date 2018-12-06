@@ -130,16 +130,18 @@
         undefinedHTML: '&nbsp;'
       });
 
+      var mapView = new ol.View({
+        center: [-390956.2904,6855216.6632],
+        zoom: 14
+      });
+
       var map = new ol.Map({
         layers: layers,
         // Improve user experience by loading tiles while dragging/zooming. Will make
         // zooming choppy on mobile or slow devices.
         loadTilesWhileInteracting: true,
         target: 'map',
-        view: new ol.View({
-          center: [-390956.2904,6855216.6632],
-          zoom: 14
-        }),
+        view: mapView,
         controls: ol.control.defaults({
           attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
             collapsible: false
