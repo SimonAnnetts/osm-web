@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>OpenLayers OSM 27700 projection</title>
+    <title>OSM + OTM 27700 projection</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol.css" type="text/css">
     <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
@@ -101,6 +101,8 @@
             extent: mapExtent,
             center: [297093,268008],
             zoom: startZoom,
+            minZoom: 2,
+            maxZoom: 13,
 
         });
 
@@ -133,7 +135,8 @@
                             crossOrigin: null
                         }),
                         extent: mapExtent,
-                        maxZoom: 15
+                        maxZoom: 12,
+                        minZoom: 2
                     }),
                     
                     new ol.layer.Tile({
@@ -146,7 +149,8 @@
                             crossOrigin: null
                         }),
                         extent: mapExtent,
-                        maxZoom: 15
+                        maxZoom: 12,
+                        minZoom: 2
                     }),
 
                     new ol.layer.Tile({
@@ -159,7 +163,8 @@
                             crossOrigin: null
                         }),
                         extent: mapExtent,
-                        maxZoom: 15
+                        maxZoom: 12,
+                        minZoom: 2
                     }),
 
                     new ol.layer.Tile({
@@ -172,7 +177,8 @@
                             crossOrigin: null
                         }),
                         extent: mapExtent,
-                        maxZoom: 15
+                        maxZoom: 12,
+                        minZoom: 2
                     }),
                     
                     new ol.layer.Tile({
@@ -198,7 +204,8 @@
                                 })
                             ]
                         }),
-                        maxZoom: 13
+                        maxZoom: 12,
+                        minZoom: 5
                     }),
                     
                     new ol.layer.Tile({
@@ -211,7 +218,8 @@
                         id: 'OpenSpace',
                         visible: false,
                         extent: OS_extent,
-                        maxZoom: 12
+                        maxZoom: 12,
+                        minZoom: 5
                     }) 
                 
                 ]

@@ -75,7 +75,8 @@
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
                                         url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/u/{z}/{x}/{y}.png?APIKEY=' + apiKey,
-                                        maxZoom: 18
+                                        maxZoom: 18,
+                                        minZoom: 6
                                 })
                         }));
       layers.push(new ol.layer.Tile({
@@ -83,7 +84,8 @@
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
                                         url: 'http://{a-e}.osm1.esdm.co.uk/osm/900913/c/{z}/{x}/{y}.png?APIKEY=' + apiKey,
-                                        maxZoom: 18
+                                        maxZoom: 18,
+                                        minZoom: 6
                                 })
                         }));
 
@@ -92,7 +94,8 @@
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
                                         url: '/900913/u/{z}/{x}/{y}.png?APIKEY=' + apiKey,
-                                        maxZoom: 18
+                                        maxZoom: 18,
+                                        minZoom: 6
                                 })
                         }));
       layers.push(new ol.layer.Tile({
@@ -100,7 +103,8 @@
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
                                         url: '/900913/c/{z}/{x}/{y}.png?APIKEY=' + apiKey,
-                                        maxZoom: 18
+                                        maxZoom: 18,
+                                        minZoom: 6
                                 })
                         }));
       layers.push(new ol.layer.Tile({
@@ -108,7 +112,8 @@
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
                                         url: '/900913/tu/{z}/{x}/{y}.png?APIKEY=' + apiKey,
-                                        maxZoom: 17
+                                        maxZoom: 18,
+                                        minZoom: 6
                                 })
                         }));
       layers.push(new ol.layer.Tile({
@@ -116,7 +121,8 @@
                                 //preload: Infinity,
                                 source: new ol.source.OSM({
                                         url: '/900913/tc/{z}/{x}/{y}.png?APIKEY=' + apiKey,
-                                        maxZoom: 17
+                                        maxZoom: 18,
+                                        minZoom: 6
                                 })
                         }));
 
@@ -132,7 +138,9 @@
 
       var mapView = new ol.View({
         center: [-390956.2904,6855216.6632],
-        zoom: 14
+        zoom: 14,
+        maxZoom: 18,
+        minZoom: 6
       });
 
       var map = new ol.Map({
